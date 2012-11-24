@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://simpleframework.net/xsd/default/simple.xsd">
+	<handleClass>
+		net.simpleframework.mvc.component.portal.PortalPageLoad
+	</handleClass>
+	<components>
+		<ajaxRequest name="ajaxLayout"
+			handleClass="net.simpleframework.mvc.component.portal.PortalAction"
+			handleMethod="portalRequest" disabledTriggerAction="false">
+		</ajaxRequest>
+		<ajaxRequest name="layoutContent" parallel="true"
+			handleClass="net.simpleframework.mvc.component.portal.PortalAction"
+			handleMethod="contentRequest" disabledTriggerAction="false">
+			<jsCompleteCallback>
+        <![CDATA[
+          var li = $(json['li']);
+          if (!li) 
+          	return;
+          new $UI.AjaxRequest(li.down('.content'), 
+          	json['text'], json['ajaxRequestId']);
+          _lo_setPageletFontStyle(li, json['fontStyle']);  
+        ]]>
+      </jsCompleteCallback>
+		</ajaxRequest>
+	</components>
+</page>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://simpleframework.net/xsd/default/simple.xsd">
+  <scriptInit>
+  	import net.simpleframework.mvc.component.portal.PortalUtils;
+  </scriptInit>
+
+  <components>
+    <ajaxRequest name="ajaxDraggableSave" handleClass="net.simpleframework.mvc.component.portal.PortalAction"
+      handleMethod="draggableSave">
+      <jsCompleteCallback>
+				$Actions['ajaxDraggableSave'].itemChecked();
+			</jsCompleteCallback>
+    </ajaxRequest>
+
+    <!-- update layout -->
+    <ajaxRequest name="ajaxPositionSave" handleClass="net.simpleframework.mvc.component.portal.PortalAction"
+      handleMethod="positionSave">
+      <jsCompleteCallback>
+        <![CDATA[
+          var f = $Actions['ajaxPositionSave'];
+          if (f.portal_tb_tip) 
+            f.portal_tb_tip.remove();
+        ]]>
+      </jsCompleteCallback>
+    </ajaxRequest>
+
+    <!-- option window -->
+    <ajaxRequest name="layoutOptionRequest">
+      <urlForward>module/option_template.jsp</urlForward>
+    </ajaxRequest>
+    <window name="layoutOptionWindow" contentRef="layoutOptionRequest" height="400" width="350">
+    </window>
+    <ajaxRequest name="layoutOptionSave" handleClass="net.simpleframework.mvc.component.portal.PortalAction"
+      handleMethod="optionSave" selector="#optionEditorForm">
+      <jsCompleteCallback>
+        <![CDATA[
+        var win = $Actions["layoutOptionWindow"];
+        win.close();        
+        $Actions['layoutContent'](win.pagelet.params);
+        var t = json["title"];
+        if (t) {
+          $(win.pagelet).down('.titlebar').update(t);
+        }
+        ]]>
+      </jsCompleteCallback>
+    </ajaxRequest>
+    <!-- ui option window -->
+    <ajaxRequest name="layoutUIOptionRequest">
+      <urlForward>ui_option.jsp</urlForward>
+    </ajaxRequest>
+    <window name="layoutUIOptionWindow" contentRef="layoutUIOptionRequest" title="#(portal.0)"
+      height="450" width="360">
+    </window>
+
+    <!-- module window -->
+    <tabs name="layoutModulesTabs" handleClass="net.simpleframework.mvc.component.portal.PortalModulesHandler">
+    </tabs>
+    <window name="layoutModulesWindow" contentRef="layoutModulesTabs" height="450" width="720"
+      title="#(portal.1)">
+    </window>
+    <ajaxRequest name="addLayoutModule" handleClass="net.simpleframework.mvc.component.portal.PortalAction"
+      handleMethod="addModule" confirmMessage="#(portal_admin.0)">
+      <jsCompleteCallback>
+        <![CDATA[
+          var ul = $(json['column']);
+          var li = json['created'].makeElement();
+          ul.insert(li);
+          $Actions['layoutModulesWindow'].close();
+          _lo_getPortal(ul).initPagelet(li, json['draggable']);
+        ]]>
+      </jsCompleteCallback>
+    </ajaxRequest>
+
+    <!-- layout window -->
+    <ajaxRequest name="layoutColumnsRequest">
+      <urlForward>columns_portal.jsp</urlForward>
+    </ajaxRequest>
+    <window name="layoutColumnsWindow" contentRef="layoutColumnsRequest" height="190" width="380"
+      title="#(portal.2)">
+    </window>
+
+    <!-- menu -->
+    <menu name="layoutContextMenu" menuEvent="contextmenu">
+      <jsBeforeShowCallback>return _lo_menuBeforeShow(menu);</jsBeforeShowCallback>
+      <menuitem title="#(portal.3)" iconClass="portal_icon_set">
+        <jsSelectCallback>_lo_fireOptionAction(item);</jsSelectCallback>
+      </menuitem>
+      <menuitem title="#(portal.4)" iconClass="portal_icon_opt">
+        <jsSelectCallback>_lo_fireMenuAction(item, "layoutUIOptionWindow");</jsSelectCallback>
+      </menuitem>
+      <menuitem title="-"></menuitem>
+      <menuitem title="#(portal.5)" iconClass="portal_icon_add_let">
+        <jsSelectCallback>_lo_fireMenuAction(item, "layoutModulesWindow");</jsSelectCallback>
+      </menuitem>
+      <menuitem title="#(portal.6)" iconClass="portal_icon_columns">
+        <jsSelectCallback>_lo_fireMenuAction(item, "layoutColumnsWindow");</jsSelectCallback>
+      </menuitem>
+      <menuitem title="-"></menuitem>
+      <menuitem title="#(portal.7)" checkbox="true">
+        <jsCheckCallback>_lo_toggleSortable(item);</jsCheckCallback>
+      </menuitem>
+    </menu>
+  </components>
+</page>

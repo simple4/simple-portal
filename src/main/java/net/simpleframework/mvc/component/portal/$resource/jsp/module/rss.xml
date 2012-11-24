@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://simpleframework.net/xsd/default/simple.xsd">
+  <components>
+    <ajaxRequest name="ajaxRssContent">
+      <urlForward>rss_all.jsp</urlForward>
+    </ajaxRequest>
+    <window name="rssContentWindow" contentRef="ajaxRssContent"
+      height="480" width="640" modal="false" maximize="true" minimize="true">
+    </window>
+
+    <tooltip name="ajaxRssTooltip">
+      <tip delay="0.5" hideAfter="5" />
+    </tooltip>
+  </components>
+</page>
